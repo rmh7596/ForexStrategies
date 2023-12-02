@@ -2,8 +2,7 @@ from selenium.webdriver.support.ui import Select
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-#from selenium.webdriver.edge.options import Options
-from selenium.webdriver.safari.options import Options
+from selenium.webdriver.firefox.options import Options
 from datetime import datetime
 from time import sleep
 from flask import Flask, request, Response, jsonify
@@ -73,10 +72,10 @@ scheduler = BackgroundScheduler()
 def updateDayList():
     log.info("Updating day list")
     days_final.clear()
-    edge_options = Options()
-    edge_options.add_argument("headless")
+    firefox_options = Options()
+    firefox_options.add_argument("-headless")
 
-    driver = webdriver.Safari(options=edge_options)
+    driver = webdriver.Firefox(options=firefox_options)
     rows = scrapeRows(driver)[2:]
     days_lst = parseRows(rows)
     driver.quit()
@@ -93,8 +92,8 @@ def updateDayList():
         days_final[i] = datetime.strptime(days_final[i], '%A, %B %d, %Y %H:%M')
         
 if __name__ == "__main__":
-    log_filename = "newsScraper." + str(datetime.now()) + ".log"
-    log.basicConfig(filename=log_filename, level=log.DEBUG)
+    log_filename = "newsScraper." + str(datetime.now().strftime('%m-%d_%H%M%S')) + ".log"
+    log.basicConfig(filename=log_filename, level=log.DEBUG ,encoding='utf-8')
     log.info('Initial population of list')
     
     updateDayList()
