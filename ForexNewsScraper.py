@@ -101,4 +101,4 @@ if __name__ == "__main__":
     log.info("Starting scheduler")
     scheduler.start()
     
-    app.run(debug=True, use_reloader=False)
+    app.run(debug=False, use_reloader=False)
