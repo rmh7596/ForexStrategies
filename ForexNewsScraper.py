@@ -1,6 +1,4 @@
-from selenium.webdriver.support.ui import Select
 from selenium import webdriver
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from datetime import datetime
@@ -63,8 +61,10 @@ def isTimeToBuy():
         time_delta_in_mins = ((day-current_time).seconds)/60
         if time_delta_in_mins < 15:
             # Buy 15 mins before
+            log.info("Buy")
             return {"buy":True}
 
+    log.info("Not time to buy")
     return {"buy":False}
 
 scheduler = BackgroundScheduler()
@@ -73,9 +73,10 @@ def updateDayList():
     log.info("Updating day list")
     days_final.clear()
     firefox_options = Options()
-    firefox_options.add_argument("-headless")
+    #firefox_options.add_argument("-headless")
 
-    driver = webdriver.Firefox(options=firefox_options)
+    #driver = webdriver.Firefox(options=firefox_options)
+    driver = webdriver.Remote(command_executor="10.131.11.25:4444", options=firefox_options)
     rows = scrapeRows(driver)[2:]
     days_lst = parseRows(rows)
     driver.quit()
