@@ -6,7 +6,7 @@ from time import sleep
 from flask import Flask, request, Response, jsonify
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
-#import logging as log
+import logging as log
 
 # Source: https://www.investing.com/economic-calendar/
 days_final = []
@@ -70,13 +70,14 @@ def isTimeToBuy():
 scheduler = BackgroundScheduler()
 @scheduler.scheduled_job(IntervalTrigger(days=7))
 def updateDayList():
-    #log.info("Updating day list")
+    log.info("Updating day list")
     days_final.clear()
     firefox_options = Options()
-    #firefox_options.add_argument("-headless")
+    firefox_options.add_argument("-headless")
+    firefox_options.add_argument("-no-sandbox")
 
-    #driver = webdriver.Firefox(options=firefox_options)
-    driver = webdriver.Remote(command_executor="10.131.11.25:4444", options=firefox_options)
+    driver = webdriver.Remote(command_executor="https://standalone-firefox-firefox-scraper.apps.okd4.csh.rit.edu", options=firefox_options)
+    #driver.set_page_load_timeout(60)
     rows = scrapeRows(driver)[2:]
     days_lst = parseRows(rows)
     driver.quit()
@@ -94,12 +95,12 @@ def updateDayList():
         
 if __name__ == "__main__":
     log_filename = "newsScraper." + str(datetime.now().strftime('%m-%d_%H%M%S')) + ".log"
-    #log.basicConfig(filename=log_filename, level=log.DEBUG ,encoding='utf-8')
-    #log.info('Initial population of list')
+    log.basicConfig(filename=log_filename, level=log.DEBUG ,encoding='utf-8')
+    log.info('Initial population of list')
     
     updateDayList()
 
-    #log.info("Starting scheduler")
+    log.info("Starting scheduler")
     scheduler.start()
     
     app.run(debug=False, use_reloader=False)
