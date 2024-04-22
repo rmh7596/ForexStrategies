@@ -3,10 +3,9 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
 from datetime import datetime
 from time import sleep
-from flask import Flask, request, Response, jsonify
+from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
-import logging as log
 
 # Source: https://www.investing.com/economic-calendar/
 days_final = []
@@ -70,7 +69,6 @@ def isTimeToBuy():
 scheduler = BackgroundScheduler()
 @scheduler.scheduled_job(IntervalTrigger(days=7))
 def updateDayList():
-    log.info("Updating day list")
     days_final.clear()
     firefox_options = Options()
     firefox_options.add_argument("-headless")
@@ -94,13 +92,8 @@ def updateDayList():
         days_final[i] = datetime.strptime(days_final[i], '%A, %B %d, %Y %H:%M')
         
 if __name__ == "__main__":
-    log_filename = "newsScraper." + str(datetime.now().strftime('%m-%d_%H%M%S')) + ".log"
-    log.basicConfig(filename=log_filename, level=log.DEBUG ,encoding='utf-8')
-    log.info('Initial population of list')
-    
     updateDayList()
 
-    log.info("Starting scheduler")
     scheduler.start()
     
     app.run(debug=False, use_reloader=False)
