@@ -73,8 +73,9 @@ def updateDayList():
     firefox_options = Options()
     firefox_options.add_argument("-headless")
     firefox_options.add_argument("-no-sandbox")
-
+    print("Attempting to connect to remote")
     driver = webdriver.Remote(command_executor="https://standalone-firefox-calendar-scraper.apps.okd4.csh.rit.edu", options=firefox_options)
+    print("Connected to driver:", driver)
     #driver.set_page_load_timeout(60)
     rows = scrapeRows(driver)[2:]
     days_lst = parseRows(rows)
