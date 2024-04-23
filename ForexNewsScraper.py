@@ -91,10 +91,14 @@ def updateDayList():
     
     for i in range(len(days_final)):
         days_final[i] = datetime.strptime(days_final[i], '%A, %B %d, %Y %H:%M')
-        
-if __name__ == "__main__":
-    updateDayList()
 
-    scheduler.start()
+@app.route('/')
+def hello():
+    return "Hello, World!"
+
+if __name__ == "__main__":
+    #updateDayList()
+
+    #scheduler.start()
     
     app.run(debug=True)
