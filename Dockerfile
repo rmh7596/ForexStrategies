@@ -9,6 +9,9 @@ WORKDIR /app
 # install the dependencies and packages in the requirements file
 RUN pip install -r requirements.txt
 
+# Expose port 5000 to the outside world
+EXPOSE 5000
+
 COPY . /app
 
 ENTRYPOINT [ "python" ]
