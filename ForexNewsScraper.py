@@ -7,6 +7,7 @@ from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 import selenium.common.exceptions
+import logging
 
 # Source: https://www.investing.com/economic-calendar/
 days_final = []
@@ -14,7 +15,7 @@ app = Flask(__name__)
 
 def scrapeRows(driver):
     driver.get("https://www.investing.com/economic-calendar/")
-    print("Successfully got website")
+    logging.info("Successfully got website")
     this_week_btn = driver.find_element(By.ID, "timeFrame_thisWeek")
     this_week_btn.click() # Naviate to this week
 
@@ -75,12 +76,12 @@ def updateDayList():
     firefox_options = Options()
     firefox_options.add_argument("-headless")
     firefox_options.add_argument("-no-sandbox")
-    print("Attempting to connect to remote")
+    logging.info("Attempting to connect to remote")
     try:
         driver = webdriver.Remote(command_executor="https://standalone-firefox-calendar-scraper.apps.okd4.csh.rit.edu", options=firefox_options)
         driver.set_page_load_timeout(45)
         driver.implicitly_wait(45)
-        print("Connected to driver:", driver)
+        logging.info("Connected to driver:", driver)
         rows = scrapeRows(driver)[2:]
         days_lst = parseRows(rows)
         driver.quit()
@@ -97,9 +98,9 @@ def updateDayList():
             days_final[i] = datetime.strptime(days_final[i], '%A, %B %d, %Y %H:%M')
         return
     except selenium.common.WebDriverException as e:
-        print("Webdriver exception")
+        logging.warning("Webdriver exception")
         driver.quit()
-        print(e.msg)
+        logging.debug(e.msg)
         sleep(30) # Wait and try again
         updateDayList()
     
@@ -108,5 +109,5 @@ if __name__ == "__main__":
     updateDayList()
 
     scheduler.start()
-    
+
     app.run(host="0.0.0.0")
