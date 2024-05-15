@@ -58,12 +58,8 @@ def isTimeToBuy():
     current_time = datetime.now()
     for day in days_final:
         time_delta_in_mins = ((day-current_time).seconds)/60
-        if time_delta_in_mins < 15:
-            # Buy 15 mins before
-            #log.info("Buy")
+        if time_delta_in_mins < 5:
             return {"buy":True}
-
-    #log.info("Not time to buy")
     return {"buy":False}
 
 scheduler = BackgroundScheduler()
@@ -92,13 +88,9 @@ def updateDayList():
     for i in range(len(days_final)):
         days_final[i] = datetime.strptime(days_final[i], '%A, %B %d, %Y %H:%M')
 
-@app.route('/test', methods=['GET'])
-def test():
-    return "21"
-
 if __name__ == "__main__":
-    #updateDayList()
+    updateDayList()
 
-    #scheduler.start()
+    scheduler.start()
     
     app.run(host="0.0.0.0")
