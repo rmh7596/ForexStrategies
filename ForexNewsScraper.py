@@ -92,9 +92,9 @@ def updateDayList():
     for i in range(len(days_final)):
         days_final[i] = datetime.strptime(days_final[i], '%A, %B %d, %Y %H:%M')
 
-@app.route('/')
-def hello():
-    return "Hello, World!"
+@app.route('/test')
+def test():
+    return 21
 
 if __name__ == "__main__":
     #updateDayList()
