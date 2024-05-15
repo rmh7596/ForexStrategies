@@ -92,13 +92,13 @@ def updateDayList():
     for i in range(len(days_final)):
         days_final[i] = datetime.strptime(days_final[i], '%A, %B %d, %Y %H:%M')
 
-@app.route('/test')
+@app.route('/test', methods=['GET'])
 def test():
-    return 21
+    return "21"
 
 if __name__ == "__main__":
     #updateDayList()
 
     #scheduler.start()
     
-    app.run(debug=True)
+    app.run(host="0.0.0.0")
