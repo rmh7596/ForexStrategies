@@ -6,6 +6,7 @@ from time import sleep
 from flask import Flask
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
+import selenium.common.exceptions
 
 # Source: https://www.investing.com/economic-calendar/
 days_final = []
@@ -13,6 +14,7 @@ app = Flask(__name__)
 
 def scrapeRows(driver):
     driver.get("https://www.investing.com/economic-calendar/")
+    print("Successfully got website")
     this_week_btn = driver.find_element(By.ID, "timeFrame_thisWeek")
     this_week_btn.click() # Naviate to this week
 
@@ -53,7 +55,7 @@ def parseRows(rows):
     days.append(day_lst) # To ensure Saturday is included
     return days
 
-@app.route('/getCal', methods=['GET'])
+@app.route('/nextEventSoon', methods=['GET'])
 def isTimeToBuy():
     current_time = datetime.now()
     for day in days_final:
@@ -61,6 +63,10 @@ def isTimeToBuy():
         if time_delta_in_mins < 5:
             return {"buy":True}
     return {"buy":False}
+
+@app.route('/getEventList', methods=['GET'])
+def getEventList():
+    return days_final
 
 scheduler = BackgroundScheduler()
 @scheduler.scheduled_job(IntervalTrigger(days=7))
@@ -72,6 +78,8 @@ def updateDayList():
     print("Attempting to connect to remote")
     try:
         driver = webdriver.Remote(command_executor="https://standalone-firefox-calendar-scraper.apps.okd4.csh.rit.edu", options=firefox_options)
+        driver.set_page_load_timeout(45)
+        driver.implicitly_wait(45)
         print("Connected to driver:", driver)
         rows = scrapeRows(driver)[2:]
         days_lst = parseRows(rows)
@@ -84,11 +92,14 @@ def updateDayList():
             for j in range(1, len(days_lst_filtered[i])):
                 days_lst_filtered[i][j][0] = days_lst_filtered[i][0] + " " + days_lst_filtered[i][j][0]
                 days_final.append(days_lst_filtered[i][j][0])
-    
+
         for i in range(len(days_final)):
             days_final[i] = datetime.strptime(days_final[i], '%A, %B %d, %Y %H:%M')
-    except:
-        print("Cannot connect to webdriver")
+        return
+    except selenium.common.WebDriverException as e:
+        print("Webdriver exception")
+        driver.quit()
+        print(e.msg)
         sleep(30) # Wait and try again
         updateDayList()
     
