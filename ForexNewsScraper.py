@@ -70,23 +70,28 @@ def updateDayList():
     firefox_options.add_argument("-headless")
     firefox_options.add_argument("-no-sandbox")
     print("Attempting to connect to remote")
-    driver = webdriver.Remote(command_executor="https://standalone-firefox-calendar-scraper.apps.okd4.csh.rit.edu", options=firefox_options)
-    print("Connected to driver:", driver)
-    #driver.set_page_load_timeout(60)
-    rows = scrapeRows(driver)[2:]
-    days_lst = parseRows(rows)
-    driver.quit()
+    try:
+        driver = webdriver.Remote(command_executor="https://standalone-firefox-calendar-scraper.apps.okd4.csh.rit.edu", options=firefox_options)
+        print("Connected to driver:", driver)
+        rows = scrapeRows(driver)[2:]
+        days_lst = parseRows(rows)
+        driver.quit()
 
-    del days_lst[0] # Remove the first list
-    days_lst_filtered = filter(lambda x: len(x) > 2, days_lst)
-    days_lst_filtered = list(days_lst_filtered)
-    for i in range(len(days_lst_filtered)):
-        for j in range(1, len(days_lst_filtered[i])):
-            days_lst_filtered[i][j][0] = days_lst_filtered[i][0] + " " + days_lst_filtered[i][j][0]
-            days_final.append(days_lst_filtered[i][j][0])
+        del days_lst[0] # Remove the first list
+        days_lst_filtered = filter(lambda x: len(x) > 2, days_lst)
+        days_lst_filtered = list(days_lst_filtered)
+        for i in range(len(days_lst_filtered)):
+            for j in range(1, len(days_lst_filtered[i])):
+                days_lst_filtered[i][j][0] = days_lst_filtered[i][0] + " " + days_lst_filtered[i][j][0]
+                days_final.append(days_lst_filtered[i][j][0])
     
-    for i in range(len(days_final)):
-        days_final[i] = datetime.strptime(days_final[i], '%A, %B %d, %Y %H:%M')
+        for i in range(len(days_final)):
+            days_final[i] = datetime.strptime(days_final[i], '%A, %B %d, %Y %H:%M')
+    except:
+        print("Cannot connect to webdriver")
+        sleep(30) # Wait and try again
+        updateDayList()
+    
 
 if __name__ == "__main__":
     updateDayList()
