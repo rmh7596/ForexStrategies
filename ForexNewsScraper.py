@@ -59,12 +59,12 @@ def parseRows(rows):
 @app.route('/nextEventSoon', methods=['GET'])
 def isTimeToBuy():
     current_time = datetime.now()
-    logging.warning("Current time", current_time)
+    print(current_time)
     days_final = []
     for day in days_final:
-        logging.warning(day)
+        print(day)
         time_delta_in_mins = ((day-current_time).seconds)/60
-        logging.warning(time_delta_in_mins)
+        print(time_delta_in_mins)
         if time_delta_in_mins < 5:
             return {"buy":True}
     return {"buy":False}

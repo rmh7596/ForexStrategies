@@ -9,6 +9,9 @@ WORKDIR /app
 # install the dependencies and packages in the requirements file
 RUN pip install -r requirements.txt
 
+# Set time zone
+ENV TZ="US/Eastern"
+
 # Expose port 5000 to the outside world
 EXPOSE 5000
 
@@ -16,4 +19,5 @@ COPY . /app
 
 ENTRYPOINT [ "python" ]
 
-CMD ["ForexNewsScraper.py" ]
+# -u means unbuffered output so I can see the print statements
+CMD ["-u". "ForexNewsScraper.py" ]
