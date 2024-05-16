@@ -59,8 +59,12 @@ def parseRows(rows):
 @app.route('/nextEventSoon', methods=['GET'])
 def isTimeToBuy():
     current_time = datetime.now()
+    logging.warning("Current time", current_time)
+    days_final = []
     for day in days_final:
+        logging.warning(day)
         time_delta_in_mins = ((day-current_time).seconds)/60
+        logging.warning(time_delta_in_mins)
         if time_delta_in_mins < 5:
             return {"buy":True}
     return {"buy":False}
@@ -76,6 +80,7 @@ def updateDayList():
     firefox_options = Options()
     firefox_options.add_argument("-headless")
     firefox_options.add_argument("-no-sandbox")
+    logging.basicConfig()
     logging.info("Attempting to connect to remote")
     try:
         driver = webdriver.Remote(command_executor="https://standalone-firefox-calendar-scraper.apps.okd4.csh.rit.edu", options=firefox_options)
