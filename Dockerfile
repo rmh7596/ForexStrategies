@@ -20,4 +20,4 @@ COPY . /app
 ENTRYPOINT [ "python" ]
 
 # -u means unbuffered output so I can see the print statements
-CMD ["-u". "ForexNewsScraper.py" ]
+CMD ["-u", "ForexNewsScraper.py" ]
