@@ -60,7 +60,6 @@ def parseRows(rows):
 def isTimeToBuy():
     current_time = datetime.now()
     print(current_time)
-    days_final = []
     for day in days_final:
         print(day)
         time_delta_in_mins = ((day-current_time).seconds)/60
