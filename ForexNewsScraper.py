@@ -62,9 +62,11 @@ def isTimeToBuy():
     print(current_time)
     for day in days_final:
         print(day)
-        time_delta_in_mins = ((day-current_time).seconds)/60
-        print(time_delta_in_mins)
-        if time_delta_in_mins < 5:
+        time_delta = day-current_time
+        seconds_in_day = 24 * 60 * 60
+        time_difference = divmod(time_delta.days * seconds_in_day + time_delta.seconds, 60)
+        print(time_difference)
+        if time_difference[0] < 5:
             return {"buy":True}
     return {"buy":False}
 
