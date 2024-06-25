@@ -75,7 +75,7 @@ def getEventList():
     return days_final
 
 scheduler = BackgroundScheduler()
-@scheduler.scheduled_job(IntervalTrigger(days=7))
+@scheduler.scheduled_job(IntervalTrigger(days=5))
 def updateDayList():
     days_final.clear()
     firefox_options = Options()
