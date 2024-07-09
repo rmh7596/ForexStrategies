@@ -93,7 +93,7 @@ def updateDayList():
         driver.quit()
 
         del days_lst[0] # Remove the first list
-        days_lst_filtered = filter(lambda x: len(x) > 2, days_lst)
+        days_lst_filtered = filter(lambda x: len(x) > 1, days_lst)
         days_lst_filtered = list(days_lst_filtered)
         for i in range(len(days_lst_filtered)):
             for j in range(1, len(days_lst_filtered[i])):
